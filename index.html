@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Advertisement Slideshow</title>
+
+<style>
+    body {
+        margin: 0;
+        background: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
+
+    .slideshow-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+    }
+
+    .slide {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    
+.slide img, .slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: black; /* Optional: fill empty space with black */
+}
+
+
+    .text-box {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        background: rgba(0,0,0,0.5);
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="slideshow-container">
+
+    <!-- Texas School Advertisement Video Slide -->
+    <div class="slide">
+        <video src="./media/texas.mp4" autoplay muted playsinline></video>
+
+        <div class="text-box">Welcome to Texas School 🏫</div>
+    </div>
+     <!-- Plant Image Slide -->
+    <div class="slide">
+        <img src="./media/plant.jpg" alt="Plant Screenshot">
+        <div class="text-box">Plant More Trees 🌳</div>
+    </div>
+
+    <!-- No Plastic Video Slide -->
+    <div class="slide">
+        <video src="./media/no_plastic.mp4" autoplay muted playsinline></video>
+
+        <div class="text-box">Say No To Plastic 🚫</div>
+    </div>
+
+    <!-- No Pollution Video Slide -->
+    <div class="slide">
+        <video src="./media/no_pollution.mp4" autoplay muted playsinline></video>
+
+        <div class="text-box">No Pollution 🌍</div>
+    </div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll(".slide");
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.display = "none";
+            if (slide.querySelector("video")) {
+                slide.querySelector("video").pause();
+                slide.querySelector("video").currentTime = 0;
+            }
+        });
+
+        const slide = slides[index];
+        slide.style.display = "block";
+
+        const video = slide.querySelector("video");
+        if (video) {
+            video.play();
+            video.onended = () => {
+                nextSlide();
+            };
+        } else {
+            // For images, display 5 seconds
+            setTimeout(nextSlide, 5000);
+        }
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+    }
+
+    // Start the slideshow
+    showSlide(currentIndex);
+</script>
+
+</body>
+</html>
