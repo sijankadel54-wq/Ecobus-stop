@@ -45,26 +45,27 @@
         font-weight: bold;
     }
 
-    /* Sound button */
-    #soundBtn {
+    #enableSoundBtn {
         position: absolute;
         top: 20px;
         right: 20px;
-        background: yellow;
-        padding: 12px 20px;
-        font-size: 20px;
-        border-radius: 8px;
-        cursor: pointer;
+        background: #00ff00;
         color: black;
-        font-weight: bold;
+        font-size: 20px;
+        padding: 15px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        z-index: 1000;
     }
 </style>
 </head>
 <body>
 
-<button id="soundBtn">🔇 Tap for Sound</button>
+<button id="enableSoundBtn">Enable Sound 🔊</button>
 
 <div class="slideshow-container">
+
     <div class="slide">
         <video src="./media/texas.mp4" autoplay muted playsinline></video>
         <div class="text-box">Welcome to Texas School 🏫</div>
@@ -84,57 +85,52 @@
         <video src="./media/no_pollution.mp4" autoplay muted playsinline></video>
         <div class="text-box">No Pollution 🌍</div>
     </div>
+
 </div>
 
 <script>
-    const slides = document.querySelectorAll(".slide");
-    const videos = document.querySelectorAll("video");
-    const soundBtn = document.getElementById("soundBtn");
+const slides = document.querySelectorAll(".slide");
+let currentIndex = 0;
+let soundEnabled = false;
 
-    let soundEnabled = false;
-    let currentIndex = 0;
-
-    soundBtn.addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-
-        videos.forEach(v => {
-            v.muted = !soundEnabled;
-        });
-
-        soundBtn.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Tap for Sound";
-    });
-
-    function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.style.display = "none";
-            const video = slide.querySelector("video");
-            if (video) {
-                video.pause();
-                video.currentTime = 0;
-            }
-        });
-
-        const slide = slides[index];
-        slide.style.display = "block";
-
+function showSlide(index) {
+    slides.forEach(slide => {
+        slide.style.display = "none";
         const video = slide.querySelector("video");
         if (video) {
-            video.play();
-            video.muted = !soundEnabled;
-
-            video.onended = () => nextSlide();
-        } else {
-            setTimeout(nextSlide, 5000);
+            video.pause();
+            video.currentTime = 0;
         }
-    }
+    });
 
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % slides.length;
-        showSlide(currentIndex);
-    }
+    const slide = slides[index];
+    slide.style.display = "block";
 
+    const video = slide.querySelector("video");
+    if (video) {
+        if (soundEnabled) video.muted = false;
+        video.play();
+        video.onended = nextSlide;
+    } else {
+        setTimeout(nextSlide, 5000);
+    }
+}
+
+function nextSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
     showSlide(currentIndex);
+}
+
+document.getElementById("enableSoundBtn").addEventListener("click", () => {
+    soundEnabled = true;
+    document.querySelectorAll("video").forEach(v => v.muted = false);
+    document.getElementById("enableSoundBtn").style.display = "none";
+});
+
+// Start slideshow
+showSlide(currentIndex);
 </script>
 
 </body>
 </html>
+
