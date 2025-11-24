@@ -26,14 +26,13 @@
         height: 100%;
         position: relative;
     }
-    
-.slide img, .slide video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: black; /* Optional: fill empty space with black */
-}
 
+    .slide img, .slide video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: black;
+    }
 
     .text-box {
         position: absolute;
@@ -45,50 +44,73 @@
         font-size: 28px;
         font-weight: bold;
     }
+
+    /* Sound button */
+    #soundBtn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: yellow;
+        padding: 12px 20px;
+        font-size: 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: black;
+        font-weight: bold;
+    }
 </style>
 </head>
 <body>
 
+<button id="soundBtn">🔇 Tap for Sound</button>
+
 <div class="slideshow-container">
-
-    <!-- Texas School Advertisement Video Slide -->
     <div class="slide">
-        <video src="./media/texas.mp4" autoplay  playsinline></video>
-
+        <video src="./media/texas.mp4" autoplay muted playsinline></video>
         <div class="text-box">Welcome to Texas School 🏫</div>
     </div>
-     <!-- Plant Image Slide -->
+
     <div class="slide">
         <img src="./media/plant.jpg" alt="Plant Screenshot">
         <div class="text-box">Plant More Trees 🌳</div>
     </div>
 
-    <!-- No Plastic Video Slide -->
     <div class="slide">
-        <video src="./media/no_plastic.mp4" autoplay  playsinline></video>
-
+        <video src="./media/no_plastic.mp4" autoplay muted playsinline></video>
         <div class="text-box">Say No To Plastic 🚫</div>
     </div>
 
-    <!-- No Pollution Video Slide -->
     <div class="slide">
-        <video src="./media/no_pollution.mp4" autoplay  playsinline></video>
-
+        <video src="./media/no_pollution.mp4" autoplay muted playsinline></video>
         <div class="text-box">No Pollution 🌍</div>
     </div>
-
 </div>
 
 <script>
     const slides = document.querySelectorAll(".slide");
+    const videos = document.querySelectorAll("video");
+    const soundBtn = document.getElementById("soundBtn");
+
+    let soundEnabled = false;
     let currentIndex = 0;
+
+    soundBtn.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+
+        videos.forEach(v => {
+            v.muted = !soundEnabled;
+        });
+
+        soundBtn.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Tap for Sound";
+    });
 
     function showSlide(index) {
         slides.forEach((slide, i) => {
             slide.style.display = "none";
-            if (slide.querySelector("video")) {
-                slide.querySelector("video").pause();
-                slide.querySelector("video").currentTime = 0;
+            const video = slide.querySelector("video");
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
             }
         });
 
@@ -98,11 +120,10 @@
         const video = slide.querySelector("video");
         if (video) {
             video.play();
-            video.onended = () => {
-                nextSlide();
-            };
+            video.muted = !soundEnabled;
+
+            video.onended = () => nextSlide();
         } else {
-            // For images, display 5 seconds
             setTimeout(nextSlide, 5000);
         }
     }
@@ -112,10 +133,8 @@
         showSlide(currentIndex);
     }
 
-    // Start the slideshow
     showSlide(currentIndex);
 </script>
 
 </body>
 </html>
-
